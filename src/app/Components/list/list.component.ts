@@ -42,9 +42,10 @@ console.log("Billetes disponibles -> "+JSON.stringify(data));
 }
 
 
-abrir(){Swal.fire({
+abrir(){
+  Swal.fire({
   title: "Retiro.",
-  input: 'text',
+  input: 'number',
   inputLabel: 'Ingrese la cantidad que desea retirar.',
   inputAttributes: {
     autocapitalize: "off",
@@ -57,9 +58,20 @@ abrir(){Swal.fire({
   preConfirm: async (monto) => {
     try {
       if (!isNaN(parseFloat(monto)) && isFinite(monto)) {
-        this.retirar(parseFloat(monto));
+
+        if(monto<= this.saldo){
+          this.retirar(parseFloat(monto));
+        }else{
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Saldo insuficiente",
+          });
+        }
+
+
       } else {
-        throw new Error("Ingrese un número válido.");
+        throw new Error("Ingrese un numero valido.");
       }
     } catch (error) {
       Swal.showValidationMessage(`
@@ -70,18 +82,27 @@ abrir(){Swal.fire({
   allowOutsideClick: () => !Swal.isLoading()
 });
 
-
-
-
 }
 
 
 
 retirar(monto:number){
+
+  let timerInterval: any;
   console.log(monto);
   this.service.retirar(monto).subscribe((data:any) =>{
-    this.router.navigate(['start']);
-    location.reload();
+
+    if(data.Mensaje=="Se completo el retiro"){
+      this.router.navigate(['list']);
+      location.reload();
+      Swal.fire("Retirado");
+  }else{
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "No se pudo retirar",
+    });
+  }
 
   });
 
@@ -96,11 +117,34 @@ getSaldo(){
 
 
 recargar(){
-  this.service.reload().subscribe((data:any) =>{
-    console.log("Saldo -> "+JSON.stringify(data));
-    this.router.navigate(['start']);
-    location.reload();
-  })
+
+  Swal.fire({
+    title: "¿Deseas recargar el cajero?",
+    text: "No se podra revertir la accion",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Recargar",
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.service.reload().subscribe((data:any) =>{
+        console.log("Saldo -> "+JSON.stringify(data));
+        Swal.fire({
+          title: "Recargado",
+          text: "El cajero fue recargado.",
+          icon: "success"
+        });
+        this.router.navigate(['start']);
+        location.reload();
+      })
+
+    }
+  });
+
+
+
 
 
 }

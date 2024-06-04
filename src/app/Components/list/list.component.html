@@ -7,8 +7,9 @@
         <div class="button-container flex-column boton">
 <div class="divSaldo">
     <div class="input-group input-group-sm mb-3">
+  <label for="txtSaldo">Saldo </label>
       <span class="input-group-text txtSaldo-peso" id="inputGroup-sizing-sm">$</span>
-      <input type="text" class="form-control txtSaldo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" [(ngModel)]="this.saldo" >
+      <input type="text" class="form-control txtSaldo" name="txtSaldo" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" [(ngModel)]="this.saldo" >
     </div>
 
 </div>
@@ -34,7 +35,9 @@
           <span style="margin-left: 10px; margin-right: 10px;"></span>
 
           <button type="button" class="btn btn-danger" id="btnAbirRetirar" (click)="abrir()">Retirar</button>
+          
         </div>
+        <br>
       </div>
     </div>
 </div>
