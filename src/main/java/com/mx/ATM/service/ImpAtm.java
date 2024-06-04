@@ -38,11 +38,7 @@ public class ImpAtm implements IAtm {
 	@Override
 	public boolean retiro(double monto) {
 		// TODO Auto-generated method stub
-		
-		
-		
-		
-		
+	
 		return false;
 	}
 
@@ -102,53 +98,6 @@ public void descontarDinero() {
 }
 
 
-@Transactional
-@Modifying
-public boolean distribuirDinero(double monto) {
-	System.out.println("Monto "+ monto);
-    List<Atm> atmList = daoJpa.findAll();
-
-
-    for (Atm atm : atmList) {   	
-        if (atm.getTipo().equals("Billete")) {
-        
-        	int numBilletes = (int) (monto / atm.getDenominacion());
-            	if(numBilletes > atm.getCantidad()) {
-            	System.out.println("Cantidad "+numBilletes+" Denominacion  "+ atm.getDenominacion());
-            	numBilletes = atm.getCantidad();
-           	}
-            monto -= numBilletes * atm.getDenominacion();	
-            int aux = atm.getCantidad();
-            aux -= numBilletes; 
-            atm.setCantidad(aux);
-        	//System.out.println("monto "+monto);
-      	//System.out.println("cantidad "+atm.getCantidad());
-            daoJpa.save(atm);
-                        
-        	
-        } else if (atm.getTipo().equals("Moneda")) {
-        	int numMonedas = (int) (monto / atm.getDenominacion());
-        	if(numMonedas > atm.getCantidad()) {
-        	System.out.println("Cantidad "+numMonedas+" Denominacion  "+ atm.getDenominacion());
-        	numMonedas = atm.getCantidad();
-       	}
-        monto -= numMonedas * atm.getDenominacion();	
-        int aux = atm.getCantidad();
-        aux -= numMonedas; 
-        atm.setCantidad(aux);
-        daoJpa.save(atm);
-
-        }
-    }
-
-    return true;
-    
-}
-
-
-
-
-
 
 @Transactional
 @Modifying
@@ -169,7 +118,7 @@ public boolean distribuirDinero1(double monto) {
             aux -= numBilletes; 
             atm.setCantidad(aux);
             daoJpa.save(atm);
-            if (monto < 0) { // Si el monto restante es negativo, la transacción falló
+            if (monto < 0) {
                 return false;
             }
             
@@ -184,7 +133,7 @@ public boolean distribuirDinero1(double monto) {
             aux -= numMonedas; 
             atm.setCantidad(aux);
             daoJpa.save(atm);
-            if (monto < 0) { // Si el monto restante es negativo, la transacción falló
+            if (monto < 0) {
                 return false;
             }
         }
